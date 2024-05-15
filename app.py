@@ -1,10 +1,15 @@
+import os
 import streamlit as st
+
 from dotenv import load_dotenv
 import pdfkit
 from functions import create_chapters, write_next_chapter, summarize
 
 
 load_dotenv()
+
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
 
 st.title("Create An Ebook")
@@ -58,7 +63,7 @@ if submit_button and input_title:
 
             with st.spinner(f"Thinking about chapter {i+1}..."):
                 # summary length is a fraction of the number of words, but must be between 50 and 150
-                summary_length = max(min(round(input_words / 7), 150), 50)
+                summary_length = max(min(round(input_words / 7), 100), 50)
                 try:
                     summary = summarize(input=response, number_of_words=summary_length)
                 except Exception as e:

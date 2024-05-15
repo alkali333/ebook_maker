@@ -2,3 +2,4 @@
 /venv/
 /ebooks/
 *.txt
+/__pycache__/

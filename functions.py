@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-model = "gpt-3.5-turbo"  # have it here so we can change for debugging
+model = "gpt-4-turbo"  # have it here so we can change for debugging
 
 
 def create_chapters(title: str, description: str) -> list:
@@ -57,9 +57,9 @@ def write_next_chapter(
                     {summary_so_far},
         """
     else:
-        system_prompt = """You are writing an ebook chapter for a book. 350 words. \n
-                  Use the previous chapter summaries provided to include the key themes, and start with a transition from the
-                  previous chapter.\n
+        system_prompt = """You are writing a chapter of an ebook. {number_of_words} words. \n
+                  Use the previous chapter summaries provided to keep a consistant narrative, and start 
+                  each chapter with a transition from the previous chapter.
                   Don't mention the present or previous chapters by name \n\n
                     BOOK NAME: {book_name} \n
                     BOOK DESCRIPTION: {book_description} \n
