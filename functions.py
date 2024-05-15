@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-model = "gpt-4-turbo"  # have it here so we can change for debugging
+model = "gpt-3.5-turbo"  # have it here so we can change for debugging
 
 
 def create_chapters(title: str, description: str) -> list:
