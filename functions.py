@@ -4,6 +4,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
+model = "gpt-4-turbo"  # have it here so we can change for debugging
+
+
 def create_chapters(title: str, description: str) -> list:
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -11,7 +14,8 @@ def create_chapters(title: str, description: str) -> list:
                 "system",
                 """Create a list of 7 chapters for an ebook, include introductory 
             and concluding chapters and create interesting names for the introduction and 
-            conculsion chapter. Respond only with the chapter seperated by commas.
+            conculsion chapter. Respond only with the chapter names seperated by commas.
+            Don't include the number or the word 'chapter'.
             The book has a title and optional description
             Output Format: Chapter 1 Name, Chapter 2 Name, ...""",
             ),
@@ -19,7 +23,7 @@ def create_chapters(title: str, description: str) -> list:
         ]
     )
 
-    llm = ChatOpenAI(model="gpt-4-turbo")
+    llm = ChatOpenAI(model=model)
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
@@ -41,12 +45,13 @@ def write_next_chapter(
     chapter_number: int,
     chapter_name: str,
     summary_so_far: str,
+    number_of_words: int = 350,
 ) -> str:
     """Writes the next chapter continuing from summary so far"""
 
     if chapter_number == 1:
         system_prompt = """You are writing the first chapter of an ebook. Make this first chapter interesting to 
-        encourage the user to read on. 350 words\n
+        encourage the user to read on. {number_of_words} words\n
                     BOOK NAME: {book_name} \n
                     BOOK DESCRIPTION: {book_description} \n
                     {summary_so_far},
@@ -74,7 +79,7 @@ def write_next_chapter(
         ]
     )
 
-    llm = ChatOpenAI(model="gpt-4-turbo")
+    llm = ChatOpenAI(model=model)
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
@@ -86,6 +91,7 @@ def write_next_chapter(
                 "summary_so_far": summary_so_far or "not supplied",
                 "chapter_number": chapter_number,
                 "chapter_name": chapter_name,
+                "number_of_words": number_of_words,
             }
         )
     except Exception as e:
@@ -95,24 +101,26 @@ def write_next_chapter(
     return response
 
 
-def summarize(input: str) -> str:
+def summarize(input: str, number_of_words: int) -> str:
     """Summarizes the chapter, including list of key themes and ideas"""
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
-                """You are writing a 100 word summary of an ebook chapter:""",
+                "You are writing a {number_of_words} word summary of an ebook chapter:",
             ),
             ("user", "Book Chapter: {input}"),
         ]
     )
 
-    llm = ChatOpenAI(model="gpt-4-turbo")
+    llm = ChatOpenAI(model=model)
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
     try:
-        response = chain.invoke({"input": input})
+        response = chain.invoke(
+            {"input": input, "number_of_words": str(number_of_words)}
+        )
 
         return response
 
