@@ -4,15 +4,15 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-model = "gpt-4-turbo"  # have it here so we can change for debugging
+model = "gpt-3.5-turbo"  # have it here so we can change for debugging
 
 
-def create_chapters(title: str, description: str) -> list:
+def create_chapters(number: int, title: str, description: str) -> list:
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
-                """Create a list of 7 chapters for an ebook, include introductory 
+                """Create a list of {number} chapters for an ebook, include introductory 
             and concluding chapters and create interesting names for the introduction and 
             conculsion chapter. Respond only with the chapter names seperated by commas.
             Don't include the number or the word 'chapter'.
@@ -29,7 +29,11 @@ def create_chapters(title: str, description: str) -> list:
 
     try:
         response = chain.invoke(
-            {"title": title, "description": description or "not supplied"}
+            {
+                "number": number,
+                "title": title,
+                "description": description or "not supplied",
+            }
         )
     except Exception as e:
         print(f"Error fetching the response: {e}")
@@ -57,13 +61,14 @@ def write_next_chapter(
                     {summary_so_far},
         """
     else:
-        system_prompt = """You are writing a chapter of an ebook. {number_of_words} words. \n
-                  Use the previous chapter summaries provided to keep a consistant narrative, and start 
-                  each chapter with a transition from the previous chapter.
+        system_prompt = f"""You are writing a chapter of an ebook. {{number_of_words}} words. \n
+                  Use the previous chapter summaries provided to keep a consistant narrative, make this
+                 chapter follows on naturally from the previous chapter ({chapter_number - 1}) provided 
+                 in the summary below.
                   Don't mention the present or previous chapters by name \n\n
-                    BOOK NAME: {book_name} \n
-                    BOOK DESCRIPTION: {book_description} \n
-                    SUMMARY SO FAR: {summary_so_far} """
+                    BOOK NAME: {{book_name}} \n
+                    BOOK DESCRIPTION: {{book_description}} \n
+                    SUMMARY SO FAR: {{summary_so_far}} """
 
     prompt = ChatPromptTemplate.from_messages(
         [
