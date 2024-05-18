@@ -3,8 +3,13 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from langchain_core.output_parsers import StrOutputParser
 
+import streamlit as st
+
 
 model = "gpt-3.5-turbo"  # have it here so we can change for debugging
+
+if "api_key" not in st.session_state:
+    st.session_state.api_key = ""
 
 
 def create_chapters(number: int, title: str, description: str) -> list:
@@ -23,7 +28,7 @@ def create_chapters(number: int, title: str, description: str) -> list:
         ]
     )
 
-    llm = ChatOpenAI(model=model)
+    llm = ChatOpenAI(model=model, api_key=st.session_state.api_key)
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
@@ -84,7 +89,7 @@ def write_next_chapter(
         ]
     )
 
-    llm = ChatOpenAI(model=model)
+    llm = ChatOpenAI(model=model, api_key=st.session_state.api_key)
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
@@ -118,7 +123,7 @@ def summarize(input: str, number_of_words: int) -> str:
         ]
     )
 
-    llm = ChatOpenAI(model=model)
+    llm = ChatOpenAI(model=model, api_key=st.session_state.api_key)
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
