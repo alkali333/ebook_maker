@@ -1,13 +1,13 @@
 import os
 import streamlit as st
 
-from dotenv import load_dotenv
 import pdfkit
 from functions import create_chapters, write_next_chapter, summarize
 
+if os.path.isfile(".env"):
+    from dotenv import load_dotenv
 
-load_dotenv()
-
+    load_dotenv()
 
 if "api_key" not in st.session_state:
     st.session_state.api_key = ""
@@ -19,9 +19,7 @@ if os.getenv("LANGCHAIN_API_KEY"):
 
 # If no API key is set, ask for it
 if not st.session_state.api_key:
-    api_key = st.sidebar.text_input(
-        "Open AI API Key", value=os.getenv("OPENAI_API_KEY") or "", type="password"
-    )
+    api_key = st.sidebar.text_input("Open AI API Key", value="", type="password")
     submit_api_key = st.sidebar.button("Submit API Key")
 
     if submit_api_key and api_key:
