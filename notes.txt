@@ -1,0 +1,8 @@
+System, you are writing a book called {name}
+
+You are writing chapter number 2 for a book called {name}
+please have it flow nicely from the previous chapter.
+
+Previous Chapter Summary: {summary}
+
+Need a summarize function. 
