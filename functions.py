@@ -6,7 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 import streamlit as st
 
 
-model = "gpt-3.5-turbo"  # have it here so we can change for debugging
+model = "gpt-4-turbo"  # have it here so we can change for debugging
 
 if "api_key" not in st.session_state:
     st.session_state.api_key = ""
@@ -22,7 +22,7 @@ def create_chapters(number: int, title: str, description: str) -> list:
             conculsion chapter. Respond only with the chapter names seperated by commas.
             Don't include the number or the word 'chapter'.
             The book has a title and optional description
-            Output Format: Chapter 1 Name, Chapter 2 Name, ...""",
+            OUTPUT: Chapter 1 Name, Chapter 2 Name, ...""",
             ),
             ("user", "Book Title: {title}, Book Description: {description}"),
         ]
@@ -32,19 +32,26 @@ def create_chapters(number: int, title: str, description: str) -> list:
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
 
-    try:
-        response = chain.invoke(
-            {
-                "number": number,
-                "title": title,
-                "description": description or "not supplied",
-            }
-        )
-    except Exception as e:
-        print(f"Error fetching the response: {e}")
-        raise e
+    response = ""
+    tries = 0
+    while tries < 5:
+        try:
+            response = chain.invoke(
+                {
+                    "number": number,
+                    "title": title,
+                    "description": description or "not supplied",
+                }
+            )
+            response = response.replace("\n", " ")
+            chapters = response.split(",")
+            if len(chapters) == number:
+                return chapters
+            tries += 1
+        except Exception as e:
+            print(f"Error fetching the response: {e}")
+            raise e
 
-    response = response.replace("\n", " ")
     return response.split(",")
 
 
