@@ -19,7 +19,7 @@ if os.getenv("LANGCHAIN_API_KEY"):
 # If no API key is set, ask for it
 if not st.session_state.api_key:
     api_key = st.sidebar.text_input(
-        "Open AI API Key", value=os.getenv("LANGCHAIN_API_KEY") or "", type="password"
+        "Open AI API Key", value=os.getenv("OPENAI_API_KEY") or "", type="password"
     )
     submit_api_key = st.sidebar.button("Submit API Key")
 
