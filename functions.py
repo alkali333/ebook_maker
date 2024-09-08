@@ -6,7 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 import streamlit as st
 
 
-model = "gpt-4-turbo"  # have it here so we can change for debugging
+model = "gpt-4o"  # have it here so we can change for debugging
 
 if "api_key" not in st.session_state:
     st.session_state.api_key = ""
