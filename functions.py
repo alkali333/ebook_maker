@@ -1,6 +1,6 @@
 import ollama
 
-MODEL = "tinyllama"  # Using TinyLlama model
+MODEL = "dolphin-mistral:7b"
 
 
 def make_ollama_call(system_prompt: str, user_prompt: str) -> str:
