@@ -20,8 +20,7 @@ def make_ollama_call(system_prompt: str, user_prompt: str) -> str:
 def create_chapters(number: int, title: str, description: str) -> list:
     """Create a list of chapter names for the book"""
     system_prompt = f"""Create a list of {number} chapters for an ebook, include introductory 
-    and concluding chapters and create interesting names for the introduction and 
-    conclusion chapter. Respond only with the chapter names separated by commas.
+    and concluding chapters with interesting names. Respond only with the chapter names separated by commas.
     Don't include the number or the word 'chapter'."""
 
     user_prompt = (
